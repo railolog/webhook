@@ -99,6 +99,7 @@ def handle_dialog(res, req):
         sessionStorage[user_id]['playing_names'] = False
         sessionStorage[user_id]['last'] = ''
         sessionStorage[user_id]['used'] = []
+        return
 
     if sessionStorage[user_id]['playing_names']:
         u_name = req['request']['original_utterance'].strip().lower()
@@ -198,7 +199,7 @@ def handle_dialog(res, req):
                                      ]
         return
 
-    if any(x in req['request']['original_utterance'] for x in farewells):
+    if any(x.lower() in req['request']['original_utterance'].lower() for x in farewells):
         res['response']['text'] = 'Пока. Приятно было пообщаться'
         res['response']['end_session'] = True
         return
