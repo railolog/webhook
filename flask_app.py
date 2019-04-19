@@ -35,6 +35,12 @@ def main():
     }
     handle_dialog(response, req)
     logging.info('Response: %r', response)
+    try:
+        response['response']['buttons'] += [{'title': 'Что ты умеешь?',
+                                             'hide': True}]
+    except:
+        response['response']['buttons'] = [{'title': 'Что ты умеешь?',
+                                            'hide': True}]
     return json.dumps(response)
 
 
@@ -48,6 +54,18 @@ def handle_dialog(res, req):
         }
         sessionStorage[user_id]['playing_words'] = False
         sessionStorage[user_id]['playing_names'] = False
+        return
+
+    helps = ['помощь', 'что ты умеешь']
+    if any(x in req['request']['original_utterance'].lower() for x in helps):
+        res['response']['text'] = 'Чтобы узнать погоду скажи мне ' + \
+                                  '"погода в (интересущий тебя город)",' + \
+                                  ' чтобы узнать погоду на завтра, добавь ' + \
+                                  'слово "завтра".\n' + \
+                                  'Для того, чтобы сыграть в слова, напиши' + \
+                                  ' "играть в слова", для того, чтобы ' + \
+                                  'сыграть в имена, напиши "играть в имена"' + \
+                                  ', чтобы узнать новости скажи "новости".'
         return
 
     if sessionStorage[user_id]['first_name'] is None:
